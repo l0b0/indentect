@@ -17,11 +17,11 @@
 #               Verbose output.
 #
 # EXAMPLES
-#        indentect 1 foo.txt bar.txt
-#               Find same keys (field 1) with different values (fields 2-).
+#        indentect < file
+#               Checks whether indentation is consistent in the file.
 #
-#        indentect 2- foo.txt bar.txt
-#               Find different keys (field 1) with the same value (fields 2-).
+#        indentect -v < file
+#               Checks and outputs a summary of the line indentation.
 #
 # BUGS
 #        https://github.com/l0b0/indentect/issues
