@@ -4,11 +4,12 @@
 #        indentect.sh - Diagnose indentation
 #
 # SYNOPSIS
-#        indentect [<options>] < FILE
+#        indentect [<options>] FILE...
 #
 # DESCRIPTION
-#        Checks whether you have mixed indentation in the input, and returns
-#        with exit code 1 if indentation is inconsistent.
+#        Checks whether you have mixed indentation in the specified files (or
+#        standard input), and returns with exit code 1 if indentation is
+#        inconsistent.
 #
 #        -h, --help
 #               Display this information and quit.
@@ -17,10 +18,10 @@
 #               Verbose output.
 #
 # EXAMPLES
-#        indentect < file
-#               Checks whether indentation is consistent in the file.
+#        indentect *
+#               Checks whether indentation is consistent in all files.
 #
-#        indentect -v < file
+#        indentect -v file
 #               Checks and outputs a summary of the line indentation.
 #
 # BUGS
@@ -148,7 +149,7 @@ check_whitespace() {
 while IFS= read -r line
 do
     check_whitespace
-done
+done < <(cat "$@")
 
 if [ "${line+defined}" = defined ]
 then
