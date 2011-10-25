@@ -47,26 +47,6 @@
 
 set -o errexit -o noclobber -o nounset -o pipefail
 
-verbose_echo() {
-    # @param $1: Optionally '-n' for echo to output without newline
-    # @param $(1|2)...: Messages
-    if [ "${verbose+defined}" = defined ]
-    then
-        if [ "${1-}" = "-n" ]
-        then
-            local -r newline='-n'
-            shift
-        fi
-
-        while [ "${1+defined}" = defined ]
-        do
-            echo -e ${newline-} "$1" >&2
-            shift
-        done
-    fi
-    true
-}
-
 usage() {
     # Print documentation until the first empty line
     # @param $1: Exit code (optional)
@@ -157,24 +137,28 @@ then
     check_whitespace
 fi
 
-verbose_echo "Summary:"
-verbose_echo "Unindented lines: $unindented_lines"
-verbose_echo "Tab-indented lines: $tabs_lines"
-verbose_echo "Space-indented lines: $spaces_lines"
-verbose_echo "Mixed-indented lines: $mixed_lines"
-verbose_echo "Unknown indentation lines: $other_lines"
-
-# Error states
 declare -ri exit_code=$((other_lines + mixed_lines + spaces_lines * tabs_lines > 0))
-if [[ "$exit_code" -ne 0 ]]
+
+if [[ ${verbose+defined} = defined ]]
 then
-    if test -x /usr/bin/tput
+    if [[ -x /usr/bin/tput && $exit_code -ne 0 ]]
     then
         color="$(tput bold && tput setaf 1)"
         reset="$(tput sgr0)"
     fi
-    verbose_echo -n "${color-}in"
+
+    >&2 echo "Summary:
+Unindented lines: $unindented_lines
+Tab-indented lines: $tabs_lines
+Space-indented lines: $spaces_lines
+Mixed-indented lines: $mixed_lines
+Unknown indentation lines: $other_lines"
+
+    if [[ $exit_code -ne 0 ]]
+    then
+        >&2 echo -n "${color-}in"
+    fi
+    >&2 echo "consistent indentation${reset-}"
 fi
 
-verbose_echo "consistent indentation${reset-}"
 exit $exit_code
