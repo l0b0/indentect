@@ -56,8 +56,11 @@ test_simple() {
 }
 
 test_complex(){
+    assertTrue \
+        "Valid; no newline at end" \
+        "printf %s $' foo\n bar' | \"$cmd\""
     assertFalse \
-        "No newline at end" \
+        "Invalid; no newline at end" \
         "printf %s $' foo\n\tbar' | \"$cmd\""
 }
 
