@@ -165,4 +165,16 @@ verbose_echo "Mixed-indented lines: $mixed_lines"
 verbose_echo "Unknown indentation lines: $other_lines"
 
 # Error states
-exit $((other_lines + mixed_lines + spaces_lines * tabs_lines > 0))
+declare -ri exit_code=$((other_lines + mixed_lines + spaces_lines * tabs_lines > 0))
+if [[ "$exit_code" -ne 0 ]]
+then
+    if test -x /usr/bin/tput
+    then
+        color="$(tput bold && tput setaf 1)"
+        reset="$(tput sgr0)"
+    fi
+    verbose_echo -n "${color-}in"
+fi
+
+verbose_echo "consistent indentation${reset-}"
+exit $exit_code
