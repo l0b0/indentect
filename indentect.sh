@@ -141,24 +141,33 @@ declare -ri exit_code=$((other_lines + mixed_lines + spaces_lines * tabs_lines >
 
 if [[ ${verbose+defined} = defined ]]
 then
-    if [[ -x /usr/bin/tput && $exit_code -ne 0 ]]
+    if [[ -x /usr/bin/tput && exit_code -ne 0 ]]
     then
         color="$(tput bold && tput setaf 1)"
         reset="$(tput sgr0)"
     fi
 
-    >&2 echo "Summary:
-Unindented lines: $unindented_lines
-Tab-indented lines: $tabs_lines
-Space-indented lines: $spaces_lines
-Mixed-indented lines: $mixed_lines
-Unknown indentation lines: $other_lines"
-
-    if [[ $exit_code -ne 0 ]]
+    if [[ unindented_lines -ne 0 ]]
     then
-        >&2 echo -n "${color-}in"
+        echo "$unindented_lines unindented lines" >&2
     fi
-    >&2 echo "consistent indentation${reset-}"
+    if [[ tabs_lines -ne 0 ]]
+    then
+        echo "$tabs_lines tab-indented lines" >&2
+    fi
+    if [[ spaces_lines -ne 0 ]]
+    then
+        echo "$spaces_lines space-indented lines" >&2
+    fi
+    if [[ mixed_lines -ne 0 ]]
+    then
+        echo "${color-}$mixed_lines mixed-indented lines${reset-}" >&2
+    fi
+fi
+
+if [[ other_lines -ne 0 ]]
+then
+    echo "${color-}Internal error: $other_lines unknown indentation lines${reset-}" >&2
 fi
 
 exit $exit_code
