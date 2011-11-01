@@ -94,7 +94,7 @@ done
 declare -r whitespace_re='^([[:space:]]+)'
 declare -r tabs_re=$'^\t+$'
 declare -r spaces_re='^ +$'
-declare -r mixed_re=$'^( \t|\t )$'
+declare -r mixed_re=$'( \t|\t )'
 declare -i unindented_lines=0
 declare -i tabs_lines=0
 declare -i spaces_lines=0
