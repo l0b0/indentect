@@ -24,6 +24,12 @@
 #        indentect -v file
 #               Checks and outputs a summary of the line indentation.
 #
+# EXIT CODES
+#        1
+#               Detected inconsistent indentation.
+#        2
+#               Internal error.
+#
 # BUGS
 #        https://github.com/l0b0/indentect/issues
 #
@@ -168,6 +174,7 @@ fi
 if [[ other_lines -ne 0 ]]
 then
     echo "${color-}Internal error: $other_lines unknown indentation lines${reset-}" >&2
+    exit 2
 fi
 
 exit $exit_code
