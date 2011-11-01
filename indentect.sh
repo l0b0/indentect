@@ -106,7 +106,7 @@ declare -i tabs_lines=0
 declare -i spaces_lines=0
 declare -i mixed_lines=0
 declare -i other_lines=0
-declare indentation
+declare -r spaces="$(mktemp)"
 
 check_whitespace() {
     if [[ "$line" =~ $whitespace_re ]]
@@ -119,6 +119,7 @@ check_whitespace() {
         elif [[ "$indentation" =~ $spaces_re ]]
         then
             let spaces_lines+=1
+            printf %s "$indentation" | wc -c >> "$spaces"
         elif [[ "$indentation" =~ $mixed_re ]]
         then
             let mixed_lines+=1
@@ -143,8 +144,28 @@ then
     check_whitespace
 fi
 
-declare -ri exit_code=$((other_lines + mixed_lines + spaces_lines * tabs_lines > 0))
+declare -i exit_code=$((other_lines + mixed_lines + spaces_lines * tabs_lines > 0))
 
+# Check space indentation multiple.
+if [[ spaces_lines -ne 0 ]]
+then
+    read first_indentation < "$spaces"
+    declare -ir first_indentation
+    declare -i inconsistent=0
+
+    sort -no "$spaces" "$spaces"
+    while read indentation
+    do
+        if [[ $(( indentation % first_indentation )) -ne 0 ]]
+        then
+            exit_code=1
+            let inconsistent+=1
+        fi
+    done < "$spaces"
+fi
+declare -r exit_code
+
+# Print results
 if [[ ${verbose+defined} = defined ]]
 then
     if [[ -x /usr/bin/tput && exit_code -ne 0 ]]
@@ -164,6 +185,16 @@ then
     if [[ spaces_lines -ne 0 ]]
     then
         echo "$spaces_lines space-indented lines" >&2
+        if [[ inconsistent -ne 0 ]]
+        then
+            warning="${color-}$inconsistent exception"
+            if [[ inconsistent -gt 1 ]]
+            then
+                warning="${warning}s"
+            fi
+            warning="${warning}${reset-}"
+        fi
+        echo "$first_indentation space indentation${warning+; $warning}" >&2
     fi
     if [[ mixed_lines -ne 0 ]]
     then
