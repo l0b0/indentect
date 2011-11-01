@@ -53,6 +53,18 @@ test_simple() {
     assertTrue \
         "Multiple tab indentation" \
         "printf %s $'\tfoo\n\t\tbar\n\t\t\tbaz\n' | \"$cmd\""
+    assertFalse \
+        "Space, then tab" \
+        "printf %s $' \tfoo\n' | \"$cmd\""
+    assertFalse \
+        "Multiple space, then tab" \
+        "printf %s $'  \tfoo\n' | \"$cmd\""
+    assertFalse \
+        "Tab, then space" \
+        "printf %s $'\t foo\n' | \"$cmd\""
+    assertFalse \
+        "Multiple tab, then space" \
+        "printf %s $'\t\t foo\n' | \"$cmd\""
 }
 
 test_complex(){
@@ -62,6 +74,15 @@ test_complex(){
     assertFalse \
         "Invalid; no newline at end" \
         "printf %s $' foo\n\tbar' | \"$cmd\""
+    assertTrue \
+        "Valid space; tabs and spaces after text" \
+        "printf %s $' foo \t \n' | \"$cmd\""
+    assertTrue \
+        "Valid tab; tabs and spaces after text" \
+        "printf %s $'\tfoo \t \n' | \"$cmd\""
+    assertFalse \
+        "Invalid; tabs and spaces after text" \
+        "printf %s $' \tfoo \t \n' | \"$cmd\""
 }
 
 # load and run shUnit2
