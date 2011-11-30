@@ -37,6 +37,13 @@
 # BUGS
 #        https://github.com/l0b0/indentect/issues
 #
+#        When reporting any bugs, please include:
+#        * Input (if you're using a command, make sure to redirect to a file
+#          and include that).
+#        * The full command you ran.
+#        * --verbose output.
+#        * What you expected to see.
+#
 # COPYRIGHT
 #        Copyright (C) 2011 Victor Engmark
 #
