@@ -32,57 +32,71 @@ oneTimeSetUp() {
 }
 
 test_empty() {
-    assertTrue "/dev/null" "\"$cmd\" < /dev/null"
-    assertTrue "Nothing" "printf '' | \"$cmd\""
-    assertTrue "Single newline" "echo '' | \"$cmd\""
+    assertEquals "/dev/null" 0 "$("$cmd" < /dev/null; printf $?)"
+    assertEquals "Nothing" 0 "$(printf '' | "$cmd"; printf $?)"
+    assertEquals "Single newline" 0 "$(echo '' | "$cmd"; printf $?)"
 }
 
 test_simple() {
-    assertTrue \
+    assertEquals \
         "No indentation" \
-        "printf %s $'foo\nbar\n' | \"$cmd\""
-    assertTrue \
+        0 \
+        "$(printf %s $'foo\nbar\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Single space indentation" \
-        "printf %s $' foo\n bar\n' | \"$cmd\""
-    assertTrue \
+        0 \
+        "$(printf %s $' foo\n bar\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Multiple space indentation" \
-        "printf %s $' foo\n  bar\n   baz\n' | \"$cmd\""
-    assertTrue \
+        0 \
+        "$(printf %s $' foo\n  bar\n   baz\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Single tab indentation" \
-        "printf %s $'\tfoo\n\tbar\n' | \"$cmd\""
-    assertTrue \
+        0 \
+        "$(printf %s $'\tfoo\n\tbar\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Multiple tab indentation" \
-        "printf %s $'\tfoo\n\t\tbar\n\t\t\tbaz\n' | \"$cmd\""
-    assertFalse \
+        0 \
+        "$(printf %s $'\tfoo\n\t\tbar\n\t\t\tbaz\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Space, then tab" \
-        "printf %s $' \tfoo\n' | \"$cmd\""
-    assertFalse \
+        1 \
+        "$(printf %s $' \tfoo\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Multiple space, then tab" \
-        "printf %s $'  \tfoo\n' | \"$cmd\""
-    assertFalse \
+        1 \
+        "$(printf %s $'  \tfoo\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Tab, then space" \
-        "printf %s $'\t foo\n' | \"$cmd\""
-    assertFalse \
+        1 \
+        "$(printf %s $'\t foo\n' | "$cmd"; printf $?)"
+    assertEquals \
         "Multiple tab, then space" \
-        "printf %s $'\t\t foo\n' | \"$cmd\""
+        1 \
+        "$(printf %s $'\t\t foo\n' | "$cmd"; printf $?)"
 }
 
 test_complex(){
-    assertTrue \
+    assertEquals \
         "Valid; no newline at end" \
-        "printf %s $' foo\n bar' | \"$cmd\""
-    assertFalse \
+        0 \
+        "$(printf %s $' foo\n bar' | "$cmd"; printf $?)"
+    assertEquals \
         "Invalid; no newline at end" \
-        "printf %s $' foo\n\tbar' | \"$cmd\""
-    assertTrue \
+        1 \
+        "$(printf %s $' foo\n\tbar' | "$cmd"; printf $?)"
+    assertEquals \
         "Valid space; tabs and spaces after text" \
-        "printf %s $' foo \t \n' | \"$cmd\""
-    assertTrue \
+        0 \
+        "$(printf %s $' foo \t \n' | "$cmd"; printf $?)"
+    assertEquals \
         "Valid tab; tabs and spaces after text" \
-        "printf %s $'\tfoo \t \n' | \"$cmd\""
-    assertFalse \
+        0 \
+        "$(printf %s $'\tfoo \t \n' | "$cmd"; printf $?)"
+    assertEquals \
         "Invalid; tabs and spaces after text" \
-        "printf %s $' \tfoo \t \n' | \"$cmd\""
+        1 \
+        "$(printf %s $' \tfoo \t \n' | "$cmd"; printf $?)"
 }
 
 # load and run shUnit2
