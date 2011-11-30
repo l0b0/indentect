@@ -19,7 +19,7 @@
 #               Display this information and quit.
 #
 #        -v, --verbose
-#               Verbose output.
+#               Verbose output. Prints a summary of the indentation diagnostics.
 #
 # EXAMPLES
 #        indentect *
