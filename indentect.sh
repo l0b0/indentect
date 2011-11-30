@@ -11,6 +11,10 @@
 #        standard input), and returns with exit code 1 if indentation is
 #        inconsistent.
 #
+#        -s N, --spaces=N
+#               Assume that the indentation is N spaces. Useful if the first
+#               indented line doesn't have N space indentation.
+#
 #        -h, --help
 #               Display this information and quit.
 #
@@ -71,7 +75,7 @@ usage() {
 }
 
 # Process parameters
-params="$(getopt -o hv -l help,verbose --name "$0" -- "$@")" || usage
+params="$(getopt -o hs:v -l help,spaces:,verbose --name "$0" -- "$@")" || usage
 
 eval set -- "$params"
 unset params
@@ -82,6 +86,10 @@ do
         -h|--help)
             usage
             exit
+            ;;
+        -s|--spaces)
+            first_indentation="$2"
+            shift 2
             ;;
         -v|--verbose)
             verbose='--verbose'
@@ -149,7 +157,10 @@ declare -i exit_code=$((other_lines + mixed_lines + spaces_lines * tabs_lines > 
 # Check space indentation multiple.
 if [[ spaces_lines -ne 0 ]]
 then
-    read first_indentation < "$space_counts"
+    if [ "${first_indentation-undefined}" = undefined ]
+    then
+        read first_indentation < "$space_counts"
+    fi
     declare -ir first_indentation
     declare -i inconsistent=0
 
