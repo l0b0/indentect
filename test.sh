@@ -74,6 +74,10 @@ test_simple() {
         "Multiple tab, then space" \
         1 \
         "$(printf %s $'\t\t foo\n' | "$cmd"; printf $?)"
+    assertEquals \
+        "Descending indentation without -s" \
+        1 \
+        "$(printf %s $'foo      six\n    four\n  two\n' | "$cmd"; printf $?)"
 }
 
 test_complex(){
@@ -97,6 +101,22 @@ test_complex(){
         "Invalid; tabs and spaces after text" \
         1 \
         "$(printf %s $' \tfoo \t \n' | "$cmd"; printf $?)"
+}
+
+test_spaces_option(){
+    assertEquals "Nothing with -s" 0 "$(printf '' | "$cmd" -s 2; printf $?)"
+    assertEquals \
+        "Ascending indentation with -s" \
+        0 \
+        "$(printf %s $'  two\n      six\n    four\n' | "$cmd" -s 2; printf $?)"
+    assertEquals \
+        "Descending indentation with -s" \
+        0 \
+        "$(printf %s $'      six\n    four\n  two\n' | "$cmd" -s 2; printf $?)"
+    assertEquals \
+        "Descending indentation with wrong -s" \
+        1 \
+        "$(printf %s $'      six\n    four\n  two\n' | "$cmd" -s 4; printf $?)"
 }
 
 # load and run shUnit2
