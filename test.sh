@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-declare -r directory=$(dirname $(readlink -f "$0"))
+declare -r directory="$(dirname -- "$0")"
 declare -r cmd="${directory}/$(basename "$directory").sh"
 
 oneTimeSetUp() {
