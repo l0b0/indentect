@@ -195,35 +195,30 @@ then
 
     if [[ unindented_lines -ne 0 ]]
     then
-        echo "$unindented_lines unindented lines" >&2
+        echo "$unindented_lines unindented line$([[ unindented_lines -gt 1 ]] && printf s)" >&2
     fi
     if [[ tabs_lines -ne 0 ]]
     then
-        echo "$tabs_lines tab-indented lines" >&2
+        echo "$tabs_lines tab-indented line$([[ tabs_lines -gt 1 ]] && printf s)" >&2
     fi
     if [[ spaces_lines -ne 0 ]]
     then
-        echo "$spaces_lines space-indented lines" >&2
+        echo "$spaces_lines space-indented line$([[ spaces_lines -gt 1 ]] && printf s)" >&2
         if [[ inconsistent -ne 0 ]]
         then
-            warning="${color-}$inconsistent exception"
-            if [[ inconsistent -gt 1 ]]
-            then
-                warning="${warning}s"
-            fi
-            warning="${warning}${reset-}"
+            warning="${color-}$inconsistent exception$([[ inconsistent -gt 1 ]] && printf s)${reset-}"
         fi
         echo "$first_indentation space indentation${warning+; $warning}" >&2
     fi
     if [[ mixed_lines -ne 0 ]]
     then
-        echo "${color-}$mixed_lines mixed-indented lines${reset-}" >&2
+        echo "${color-}$mixed_lines mixed-indented line$([[ mixed_lines -gt 1 ]] && printf s)${reset-}" >&2
     fi
 fi
 
 if [[ other_lines -ne 0 ]]
 then
-    echo "${color-}Internal error: $other_lines unknown indentation lines${reset-}" >&2
+    echo "${color-}Internal error: $other_lines unknown indentation line$([[ other_lines -gt 1 ]] && printf s)${reset-}" >&2
     exit 2
 fi
 
