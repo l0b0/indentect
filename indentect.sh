@@ -5,6 +5,7 @@
 #
 # SYNOPSIS
 #        indentect [<options>] FILE...
+#        <command> | indentect [<options>]
 #
 # DESCRIPTION
 #        Checks whether you have mixed indentation in the specified files (or
