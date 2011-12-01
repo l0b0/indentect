@@ -204,13 +204,15 @@ then
     if [[ spaces_lines -ne 0 ]]
     then
         echo "$spaces_lines space-indented line$([[ spaces_lines -gt 1 ]] && printf s)" >&2
+        echo -n "$first_indentation space indentation" >&2
         if [[ inconsistent -ne 0 ]]
         then
-            warning="${color-}$inconsistent exception$([[ inconsistent -gt 1 ]] && printf s)${reset-}"
+            echo "; ${color-}$inconsistent exception$([[ inconsistent -gt 1 ]] && printf s)${reset-}" >&2
+            echo -n "Tip: Find lines with extended regular expression " >&2
+            echo "^( {$first_indentation})* {1,$(($first_indentation - 1))}[^ ]" >&2
+        else
+            echo >&2
         fi
-        echo "$first_indentation space indentation${warning+; $warning}" >&2
-        echo -n "Tip: Find lines with extended regular expression " >&2
-        echo "^( {$first_indentation})* {1,$(($first_indentation - 1))}[^ ]" >&2
     fi
     if [[ mixed_lines -ne 0 ]]
     then
