@@ -77,7 +77,7 @@ test_simple() {
     assertEquals \
         "Descending indentation without -s" \
         1 \
-        "$(printf %s $'foo      six\n    four\n  two\n' | "$cmd"; printf $?)"
+        "$(printf %s $'      six\n    four\n  two\n' | "$cmd"; printf $?)"
 }
 
 test_complex(){
