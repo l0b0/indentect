@@ -209,10 +209,14 @@ then
             warning="${color-}$inconsistent exception$([[ inconsistent -gt 1 ]] && printf s)${reset-}"
         fi
         echo "$first_indentation space indentation${warning+; $warning}" >&2
+        echo -n "Tip: Find lines with extended regular expression " >&2
+        echo "^( {$first_indentation})* {1,$(($first_indentation - 1))}[^ ]" >&2
     fi
     if [[ mixed_lines -ne 0 ]]
     then
         echo "${color-}$mixed_lines mixed-indented line$([[ mixed_lines -gt 1 ]] && printf s)${reset-}" >&2
+        echo -n "Tip: Find lines with extended regular expression " >&2
+        echo "^(( +\t)|(\t+ ))" >&2
     fi
 fi
 
