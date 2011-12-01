@@ -78,6 +78,10 @@ test_simple() {
         "Descending indentation without -s" \
         1 \
         "$(printf %s $'      six\n    four\n  two\n' | "$cmd"; printf $?)"
+    assertEquals \
+        "Different type indentation on different lines" \
+        1 \
+        "$(printf %s $'\ttab\n    spaces\n' | "$cmd"; printf $?)"
 }
 
 test_complex(){
