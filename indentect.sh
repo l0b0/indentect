@@ -195,30 +195,30 @@ then
 
     if [[ unindented_lines -ne 0 ]]
     then
-        echo "$unindented_lines unindented line$([[ unindented_lines -gt 1 ]] && printf s)" >&2
+        echo "$unindented_lines unindented line$([[ unindented_lines -gt 1 ]] && printf s)"
     fi
     if [[ tabs_lines -ne 0 ]]
     then
-        echo "$tabs_lines tab-indented line$([[ tabs_lines -gt 1 ]] && printf s)" >&2
+        echo "$tabs_lines tab-indented line$([[ tabs_lines -gt 1 ]] && printf s)"
     fi
     if [[ spaces_lines -ne 0 ]]
     then
-        echo "$spaces_lines space-indented line$([[ spaces_lines -gt 1 ]] && printf s)" >&2
-        echo -n "$first_indentation space indentation" >&2
+        echo "$spaces_lines space-indented line$([[ spaces_lines -gt 1 ]] && printf s)"
+        echo -n "$first_indentation space indentation"
         if [[ inconsistent -ne 0 ]]
         then
-            echo "; ${color-}$inconsistent exception$([[ inconsistent -gt 1 ]] && printf s)${reset-}" >&2
-            echo -n "Tip: Find lines with extended regular expression " >&2
-            echo "^( {$first_indentation})* {1,$(($first_indentation - 1))}[^ ]" >&2
+            echo "; ${color-}$inconsistent exception$([[ inconsistent -gt 1 ]] && printf s)${reset-}"
+            echo -n "Tip: Find lines with extended regular expression "
+            echo "^( {$first_indentation})* {1,$(($first_indentation - 1))}[^ ]"
         else
-            echo >&2
+            echo
         fi
     fi
     if [[ mixed_lines -ne 0 ]]
     then
-        echo "${color-}$mixed_lines mixed-indented line$([[ mixed_lines -gt 1 ]] && printf s)${reset-}" >&2
-        echo -n "Tip: Find lines with extended regular expression " >&2
-        echo "^(( +\t)|(\t+ ))" >&2
+        echo "${color-}$mixed_lines mixed-indented line$([[ mixed_lines -gt 1 ]] && printf s)${reset-}"
+        echo -n "Tip: Find lines with extended regular expression "
+        echo "^(( +\t)|(\t+ ))"
     fi
 fi
 
