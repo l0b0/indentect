@@ -122,7 +122,6 @@ declare -i tabs_lines=0
 declare -i spaces_lines=0
 declare -i mixed_lines=0
 declare -i other_lines=0
-declare -r space_counts="$(mktemp)"
 
 check_whitespace() {
     if [[ "$line" =~ $whitespace_re ]]
@@ -135,7 +134,7 @@ check_whitespace() {
         elif [[ "$indentation" =~ $spaces_re ]]
         then
             let spaces_lines+=1
-            printf %s "$indentation" | wc -c >> "$space_counts"
+            space_counts="${space_counts+$space_counts }${#indentation}"
         elif [[ "$indentation" =~ $mixed_re ]]
         then
             let mixed_lines+=1
@@ -167,20 +166,19 @@ if [[ spaces_lines -ne 0 ]]
 then
     if [ "${first_indentation-undefined}" = undefined ]
     then
-        read first_indentation < "$space_counts"
+        first_indentation="${space_counts%% *}"
     fi
     declare -ir first_indentation
     declare -i inconsistent=0
 
-    sort -no "$space_counts" "$space_counts"
-    while read indentation
+    for indentation in $space_counts
     do
         if [[ $(( indentation % first_indentation )) -ne 0 ]]
         then
             exit_code=1
             let inconsistent+=1
         fi
-    done < "$space_counts"
+    done
 fi
 declare -r exit_code
 
