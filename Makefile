@@ -1,8 +1,9 @@
 PREFIX = /usr/local/bin
 
-SCRIPT = $(notdir $(CURDIR)).sh
-FILE_PATH = $(CURDIR)/$(SCRIPT)
-INSTALL_FILE_PATH = $(PREFIX)/$(basename $(SCRIPT))
+SOURCE_FILE = $(wildcard $(notdir $(CURDIR)).*)
+SOURCE_PATH = $(CURDIR)/$(SOURCE_FILE)
+TARGET_FILE = $(basename $(SOURCE_FILE))
+TARGET_PATH = $(PREFIX)/$(TARGET_FILE)
 
 .PHONY: test
 test:
@@ -10,7 +11,7 @@ test:
 
 .PHONY: install
 install:
-	cp $(FILE_PATH) $(INSTALL_FILE_PATH)
-	chmod 555 $(INSTALL_FILE_PATH)
+	install $(SOURCE_PATH) $(TARGET_PATH)
+	sed -i -e 's#\(\./\)\?$(SOURCE_FILE)#$(TARGET_FILE)#g' $(TARGET_PATH)
 
 include tools.mk
