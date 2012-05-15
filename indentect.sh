@@ -148,16 +148,10 @@ check_whitespace() {
     fi
 }
 
-while IFS= read -r line
+while IFS= read -r line || [ -n "$line" ]
 do
     check_whitespace
 done < <(cat "$@")
-
-if [ "${line+defined}" = defined ]
-then
-    # Missing newline at EOF
-    check_whitespace
-fi
 
 declare -i exit_code=$((other_lines + mixed_lines + spaces_lines * tabs_lines > 0))
 
