@@ -1,0 +1,66 @@
+digraph Verbose {
+    start;
+
+    node [
+        shape = "diamond"
+    ];
+    more_files [
+        label = "More files?"
+    ]
+    eof [
+        label = "End of file?"
+    ];
+    tests [
+        label = "Correctly indented?"
+    ];
+
+    node [
+        shape = rect
+    ];
+    open_file [
+        label = "Open next file"
+    ];
+    read_line [
+        label = "Read line"
+    ];
+    save_indentation [
+        label = "Save indentation"
+    ];
+    print [
+        label = "Print statistics"
+    ];
+
+    subgraph cluster_exit {
+        label = "Exit";
+        fail;
+        success;
+    }
+
+    start -> more_files;
+
+    more_files -> open_file [
+        label = Yes
+    ];
+    more_files -> print [
+        label = No
+    ];
+    print -> tests;
+    open_file -> read_line;
+    read_line -> save_indentation;
+
+    save_indentation -> eof;
+
+    tests -> success [
+        label = Yes
+    ];
+    tests -> fail [
+        label = No
+    ];
+
+    eof -> more_files [
+        label = Yes
+    ];
+    eof -> read_line [
+        label = No
+    ];
+}
